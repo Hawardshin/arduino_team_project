@@ -6,7 +6,7 @@ void setup() {
   pinMode(LED_DANGER, OUTPUT);
   pinMode(LED_OPERATE, OUTPUT);
   pinMode(interruptPin, INPUT_PULLUP);
-  attachInterrupt(0, emergency, FALLING);  
+  attachInterrupt(0, emergency, FALLING); 
 }
 
 void loop() {

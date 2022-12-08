@@ -2,6 +2,7 @@
 #include "CDS.h"
 Servo Penservo;
 Servo Rotateservo;
+
 int cnt = 0;
 CDS CDS1(A0, 40, 0);		 //객체 led1 생성
 CDS CDS2(A1, 40, 0);		 //객체 led2 생성
@@ -10,6 +11,12 @@ volatile int state = 0;
 
 void emergency() {                  	// ISR
   digitalWrite(LED_OPERATE,LOW);
+  if (cnt != 0)
+  {
+    Penservo.write(180);
+    delay(200);
+    Rotateservo.write(0);
+  }
   if (state == 0)
   {
     digitalWrite(LED_DANGER,HIGH);
@@ -28,6 +35,7 @@ void emergency() {                  	// ISR
   CDS1.STATE = 0;
   CDS2.STATE = 0;
 }
+
 void  move_rotate(int i)
 {
   int angle = 1;//you can change the angle
@@ -35,7 +43,7 @@ void  move_rotate(int i)
   delay(50);
 }
 
-void  move_pen()
+void  move_pen(int time)//time is in second 1000ms
 {
   int angle = 25;
   for (int i = 0; i <= 5; i++)
@@ -43,31 +51,20 @@ void  move_pen()
     digitalWrite(LED_OPERATE,LOW);
     Penservo.write(180 - (i * angle)/5);
     //  Penservo.write((i * angle)/5);
-    delay(50);
+    delay(time * 100);
     digitalWrite(LED_OPERATE,HIGH);
     if (state == 1)
-    {
-      Penservo.write(180);
-      return ;
-    }
-  }
-  if (state == 1)
-  {
-     Penservo.write(180);
       return ;
   }
-  for (int i = 5; i >= 0; i--)
+  for (int i = 5; i > 0; i--)
   {
     digitalWrite(LED_OPERATE,LOW);
     // Penservo.write((i * angle)/5);
     Penservo.write(180 - (i * angle)/5);
-    delay(50);
+    delay(time * 100);
     digitalWrite(LED_OPERATE,HIGH);
     if (state == 1)
-    {
-     Penservo.write(180);
       return ;
-    }
   }
   // Penservo.write(180);
   Penservo.write(180);
@@ -76,10 +73,28 @@ void  move_pen()
 // pen_angle = ?
 // rotate_angle = ?
 
-int main_opperate(semiconductor obj)
+int  check_state()
 {
   CDS1.STATE = 0;
   CDS2.STATE = 0;
+  CDS1.update();
+  CDS2.update();
+  if(CDS1.STATE+CDS2.STATE == 2)
+    {
+      Serial.println("----it went dark----");
+      state = 0;
+      emergency();
+    }
+  if (state == 1)// 1 is danger
+  {
+      Serial.println("!!!!The danger is detected!!!!!");
+      return (1);
+  }
+  return (0);    
+}
+
+int main_opperate(semiconductor obj)
+{
   Serial.println("\n----------!!operate start!!-------------\n");
   int i = 0;
   int q =  obj.ret_quantity();
@@ -87,51 +102,16 @@ int main_opperate(semiconductor obj)
   while (i < q)
   {
     move_rotate(i*10);
-    CDS1.update();
-    CDS2.update();
-    if(CDS1.STATE+CDS2.STATE == 2)
-    {
-      Serial.println("----dark----");
-      state = 1;
-    }
-    if (state == 1)// 1 is danger
-    {
-      Serial.println("!!!!The danger is detected!!!!!");
-      Penservo.write(180);
-      delay(200);
-      Rotateservo.write(0);
+    if (check_state())
       return (1);
-    }
-    move_pen();
-    CDS1.STATE = 0;
-    CDS2.STATE = 0;
-    CDS1.update();
-    CDS2.update();
-    if(CDS1.STATE+CDS2.STATE==2)
-    {
-      Serial.println("----dark----");
-      state = 1;
-    }
-    else 
-    {
-      CDS1.STATE = 0;
-      CDS2.STATE = 0;
-    }
-    if (state == 1)
-    {
-      Serial.println("!!!!The danger is detected!!!!!");
-      Penservo.write(180);
-      delay(200);
-      Rotateservo.write(0);
+    move_pen(delay_time);
+    if (check_state())
       return (1);
-    }
-    delay(delay_time * 1000);
+    delay(1000);
     i++;
   }
-  Penservo.write(180);
-  delay(200);
-  Rotateservo.write(0);
   Serial.println("The operation is done");
+  print_aline();
   return (1);
 }
 

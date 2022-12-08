@@ -48,7 +48,11 @@ void  main_page(void)
       start_first_print();
       if (cnt == 5)
       {
-          Serial.println("!!!!!!!! you try 5times incorrect command so we turn off the machine!!!!!!!!!!!");
+        char temp;
+          for(int i=0; i < strlen_P(try_five); i++){
+          temp = pgm_read_byte_near(try_five+i);
+          Serial.print(temp);
+        }
           break;
       }
     }

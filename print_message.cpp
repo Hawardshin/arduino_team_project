@@ -18,6 +18,15 @@ void  off_machine(void)
   }
 }
 
+void  print_aline()
+{
+  char  temp;
+   for(int i=0; i < strlen_P(a_line); i++){
+    temp = pgm_read_byte_near(a_line+i);
+    Serial.print(temp);
+  }
+}
+
 void  start_opt_print()
 {
   char  temp;
@@ -43,7 +52,7 @@ void  start_first_print()
     Serial.print(temp);
   }
   start_opt_print();
-  Serial.println("----------------------------------------------------\n");
+ print_aline();
 }
 
 void  default_print()

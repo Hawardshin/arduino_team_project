@@ -20,6 +20,9 @@ const PROGMEM char choice_meseage[] ="\n----------------------------------------
 const PROGMEM char opperate_messege[] = "\n----------------------------------------------------\n-----------------opperate section-------------------\nYou can choose the object name to opperate\n";
 const PROGMEM char obj_type_choice_meseage[] = "Input the object type(please input number + ctrl + enter)\n1. liquid\n2. solid\n3. gas\n";
 const PROGMEM char input_guide[] = " (please input + ctrl + enter) \n";
+const PROGMEM char info_and_name[]="----------semiconductor_information--------\nThe name is: ";
+const PROGMEM char try_five[]="!!!!!!!! you try 5times incorrect command so we turn off the machine!!!!!!!!!!!";
+const PROGMEM char a_line[]="\n----------------------------------------------------\n\n";
 /*main_page.cpp*/
 void  main_page(void);
 void  off_machine(void);
@@ -30,6 +33,7 @@ void  start_opt_print();
 void  try_again(int &cnt);
 void  start_first_print();
 void  default_print();
+void  print_aline();
 
 /* find_object.cpp*/
 int  find_obj(semiconductor *obj, String find_name, int obj_num);
@@ -49,7 +53,7 @@ semiconductor  make_new_object(void);
 /*operate.cpp*/
 void emergency();
 void  move_rotate(int i);
-void  move_pen();
+void  move_pen(int time);
 int main_opperate(semiconductor obj);
 int  operate_machine(semiconductor *obj,int obj_num);
 

@@ -27,15 +27,18 @@ void semiconductor ::print_obj_type(void) {
 }
 
 void semiconductor ::print_info(void) {
-  Serial.println("----------semiconductor_information--------");
-  Serial.print("The name is: ");
+   char temp;
+   for(int i=0; i < strlen_P(info_and_name); i++){
+    temp = pgm_read_byte_near(info_and_name+i);
+    Serial.print(temp);
+  }
   Serial.println(name);
   Serial.print("The delay_time is: ");
   Serial.println(delay_time);
   Serial.print("The quantity is: ");
   Serial.println(quantity);
   print_obj_type();
-  Serial.println("-------------------------------------------");
+  print_aline();
 }
 semiconductor ::semiconductor() {
   // Serial.println("you make default object");

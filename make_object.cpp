@@ -94,7 +94,7 @@ semiconductor  make_new_object(void)
   int quantity;
   t_object_type obj_type;
 
-  Serial.println("\n----------------------------------------------------");
+  print_aline();
   Serial.println("Now you can Create new object setting to produce");
   name = input_name();
   delay_time = input_delay_time();
