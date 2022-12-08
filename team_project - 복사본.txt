@@ -1,0 +1,27 @@
+
+#include "auto_system.h"
+void setup() {
+  Serial.begin(9600);
+  default_print();
+  pinMode(LED_DANGER, OUTPUT);
+  pinMode(LED_OPERATE, OUTPUT);
+  pinMode(interruptPin, INPUT_PULLUP);
+  attachInterrupt(0, emergency, FALLING);  
+}
+
+void loop() {
+
+  if (Serial.available() >= 1)
+  {
+    String s = Serial.readString();
+    Serial.println(s);
+    if (s == "ON")
+    {
+     main_page();
+    }
+    else
+    {
+      default_print();
+    }
+  }
+}
